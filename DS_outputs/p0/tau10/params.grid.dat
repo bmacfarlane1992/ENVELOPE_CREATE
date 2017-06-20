@@ -1,0 +1,11 @@
+#----------------------------------------------------------------------------
+# GRID PARAMETERS [IVEZIC GRID] 
+#-----------------------------------------------------------------------------
+0     		P
+8.46  		R_DUST (in Solar Radii)
+1000	        R_MAX (in units of R_DUST)
+1		K_VISUAL
+10		TAU (in unit 1/K_VISUAL)
+1000            FTAU_POINTS
+100             NCELLS
+

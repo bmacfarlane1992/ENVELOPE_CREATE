@@ -1,0 +1,6 @@
+nphot = 1000000 
+scattering_mode_max = 1 
+scattering_mode= 0
+lines_mode = 1
+modified_random_walk = 0 
+tgas_eq_tdust = 1 
