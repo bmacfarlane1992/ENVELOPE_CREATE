@@ -21,7 +21,7 @@ Contact: bmacfarlane@uclan.ac.uk
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 #
 #
-nsph = int(1e6)         # Number of SPH particles in model
+nsph = int(1e5)         # Number of SPH particles in model
 #
 N_neigh = 50.     # Number of neighbours that SPH distributes particle properties over
 #

@@ -32,6 +32,13 @@ nbins = 64     # For 'reg' grid_make selection, how many bins in each dimension
 import time
 import sys
 from hyperion.importers.sph import construct_octree
+#
+# To open the hyperion from the source, open a shell then inputs the following:
+#
+# >>> import os
+# >>> import hyperion.importers.sph
+# >>> os.system('atom '+hyperion.importers.sph)
+#
 try:
     import numpy as np
 except ImportError:
@@ -43,7 +50,7 @@ except ImportError:
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 #
 #
-def reg(arch_dir, pos):
+def reg(arch_dir, pos, r_dust):
 #
     # Define world size and bin size based on nbins variable
 #
@@ -70,6 +77,21 @@ def reg(arch_dir, pos):
         z = ( binlims[0] + (i*bin_it) )
         f.write(str(z)+'\n')
     f.close()
+    count = 0
+#
+    # Now compute the radial values for each [x,y,z] bin, to eventually feed
+    # into profiles.py
+#
+    rgrid = []
+    for zz in range(0, nbins):
+        for yy in range(0, nbins):
+            for xx in range(0, nbins):
+                x = binlims[0] + ( xx * bin_int ) + ( 0.5 * bin_int )
+                y = binlims[0] + ( yy * bin_int ) + ( 0.5 * bin_int )
+                z = binlims[0] + ( zz * bin_int ) + ( 0.5 * bin_int )
+                r[count] = np.sqrt(x**2. + y**2. + z**2.) / r_dust
+                count = count + 1
+    rgrid = np.array(rgrid)
 #
     # Set up a 3D float array for all bins in cubic grid to be used in
     # densgrid.py
@@ -78,7 +100,7 @@ def reg(arch_dir, pos):
        [ [ [[0.] for i in range(nbins)] for j in range(nbins) ] for k in range(nbins) ] \
        )
 #
-    return nbins, bin_it, binlims, grid
+    return nbins, bin_it, binlims, grid, rgrid
 
 
 
@@ -150,4 +172,17 @@ def oct(arch_dir, pos, rho, h, m_part, r_dust):
             f.write('0\n')
     f.close()
 #
-    return o, n, ncells
+### ------------------------------------------------------------------------ ###
+    ### Use results to ouput grid to indicate radial locations of leaf nodes  ###
+### ------------------------------------------------------------------------ ###
+#
+    rgrid = []
+    for i in range(0, n):
+        if o.refined[i] == False:
+            rgrid.append( np.sqrt( (o['xcen'][0].array[i])**2. + \
+               (o['ycen'][0].array[i])**2. + (o['zcen'][0].array[i])**2. ) / r_dust )
+        else:
+            continue
+    rgrid = np.array(rgrid)
+#
+    return o, n, ncells, rgrid

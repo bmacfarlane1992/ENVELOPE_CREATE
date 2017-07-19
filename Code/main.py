@@ -27,18 +27,18 @@ arch_dir = "/Users/bmacfarlane1992/PHD/PROJECTS/ENVELOPE_CREATE/"
 #
 envelope_create = True      # Choose whether or not to create new SPH -> grid translated model
 #
-tau = [1.,10.,100.]                  # Optical depth at 1 micron
-p=[0,2]                       # Exponent on density profile
+tau = [1.]                  # Optical depth at 1 micron
+p=[2]                       # Exponent on density profile
 #
     # Variables for gridding
 #
-grid_method = 'reg'         # ['reg', 'oct']
+grid_method = 'oct'         # ['reg', 'oct']
 dens_method = 'sphinf'     # For 'reg' grid_method only: ['part','sphinf','brute','byhand']
 #
     # Variables for RADMC-3D outputs
 #
-therm = True        # Decide whether run RADMC-3D MC therm program
-sed = True          # Decide whether SED is generated and plotted
+therm = False        # Decide whether run RADMC-3D MC therm program
+sed = False          # Decide whether SED is generated and plotted
 #
 #
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -116,10 +116,10 @@ for tau_ind in range(0, len(tau)):
     #           'oct' = Build octree through hyperion modules
 #
             if grid_method == 'reg':
-                nbins, bin_it, binlims, grid = gridmake.reg(arch_dir, pos)
+                nbins, bin_it, binlims, grid, rgrid = gridmake.reg(arch_dir, pos, r_dust)
 #
             elif grid_method == 'oct':
-                o, n, ncells = gridmake.oct(arch_dir, pos, rho, h, m_part, r_dust)
+                o, n, ncells, rgrid = gridmake.oct(arch_dir, pos, rho, h, m_part, r_dust)
 #
             else:
                 print "Incorrect selection of grid_make variable in main.py"
@@ -169,9 +169,8 @@ for tau_ind in range(0, len(tau)):
 #
     # Check the radial density profile output from SPH -> grid method
 #
-            if grid_method == 'reg':
-                profiles.plotrho(arch_dir, bin_it, binlims, nbins, r, r_dust, rho, \
-                   rho_0, ds_dir, p[p_ind], tau[tau_ind], plt_dir)
+            profiles.plotrho(arch_dir, rgrid, r, r_dust, rho, rho_0, ds_dir, \
+               p[p_ind], tau[tau_ind], plt_dir)
 #
 #
 ### ------------------------------------------------------------------------ ###
@@ -207,9 +206,8 @@ for tau_ind in range(0, len(tau)):
     # Check the radial profiles of the temperature that is outputted
     # from SPH -> grid -> MC therm test
 #
-            if grid_method == 'reg':
-                profiles.plottemp(arch_dir, bin_it, binlims, nbins, r_dust, \
-                   ds_dir, p[p_ind], tau[tau_ind], plt_dir)
+            profiles.plottemp(arch_dir, rgrid, r_dust, ds_dir, p[p_ind], \
+               tau[tau_ind], plt_dir)
 #
 #
 ### ------------------------------------------------------------------------ ###

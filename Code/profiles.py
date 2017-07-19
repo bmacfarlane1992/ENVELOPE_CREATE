@@ -36,18 +36,13 @@ import matplotlib.pyplot as plt
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 #
 #
-def plotrho(arch_dir, bin_int, binlims, nbins, r_sph, r_dust, rho_sph, rho_0, ds_dir, \
+def plotrho(arch_dir, rgrid, r_sph, r_dust, rho_sph, rho_0, ds_dir, \
    p, tau, plt_dir):
 #
-    # Set up arrays/variables to feed in data
-#
-    ngrid = int( float(nbins)**(3.) )
-    r = [0.] * ngrid ; rho = [] ; temp = []
-#
-    f_rho = open(arch_dir+'dust_density.inp')
-#
-    # Now read in data (note that rho is artificially added to to prevent
+    # Read in data (note that rho is artificially added to to prevent
     # log-log plot issues later)
+#
+    f_rho = open(arch_dir+'dust_density.inp') ; rho = []
 #
     for i in range(0, 3):
         trash = f_rho.readline()
@@ -55,26 +50,14 @@ def plotrho(arch_dir, bin_int, binlims, nbins, r_sph, r_dust, rho_sph, rho_0, ds
         lines = lines.strip() ; columns = lines.split()
         rho.append(float(columns[0])+1.e-99)
     f_rho.close()
+    rho = np.array(rho)
 #
-    # Now fill arrays, comuputing locations
-#
-    count = 0
-    for zz in range(0, nbins):
-        for yy in range(0, nbins):
-            for xx in range(0, nbins):
-                x = binlims[0] + ( xx * bin_int ) + ( 0.5 * bin_int )
-                y = binlims[0] + ( yy * bin_int ) + ( 0.5 * bin_int )
-                z = binlims[0] + ( zz * bin_int ) + ( 0.5 * bin_int )
-                r[count] = np.sqrt(x**2. + y**2. + z**2.) / r_dust
-                count = count + 1
-    r = np.array(r) ; rho = np.array(rho) ; temp = np.array(temp)
-#
-    # Short procedure to find number of unique radii from r array, using indices
+    # Short procedure to find number of unique radii from rgrid, using indices
     # of these to produce azimuthally averaged density and temperature profiles
 #
-    r_plt, indices = np.unique(r, return_inverse=True)
+    r_plt, indices = np.unique(rgrid, return_inverse=True)
     rho_plt = [0.]*len(r_plt) ; count = [0.]*len(r_plt)
-
+#
     for i in range(0, len(indices)):
         count[indices[i]] = count[indices[i]] + 1.
         rho_plt[indices[i]] = rho_plt[indices[i]] + rho[i]
@@ -127,18 +110,17 @@ def plotrho(arch_dir, bin_int, binlims, nbins, r_sph, r_dust, rho_sph, rho_0, ds
 
 
 ### ------------------------------------------------------------------------ ###
+### ------------------------------------------------------------------------ ###
+### ------------------------------------------------------------------------ ###
+### ------------------------------------------------------------------------ ###
+### ------------------------------------------------------------------------ ###
 
 
-def plottemp(arch_dir, bin_int, binlims, nbins, r_dust, ds_dir, p, tau, plt_dir):
+def plottemp(arch_dir, rgrid, r, r_dust, ds_dir, p, tau, plt_dir):
 #
-    # Set up arrays/variables to feed in data from RADMC-3D outputs
+    # Read in data
 #
-    ngrid = int( float(nbins)**(3.) )
-    r = [0.] * ngrid ; temp = []
-#
-    f_temp = open(arch_dir+'dust_temperature.dat')
-#
-    # Now read in data
+    f_temp = open(arch_dir+'dust_temperature.dat') ; temp = []
 #
     for i in range(0,3):
         trash = f_temp.readline()
@@ -147,23 +129,10 @@ def plottemp(arch_dir, bin_int, binlims, nbins, r_dust, ds_dir, p, tau, plt_dir)
         temp.append(float(columns[0]))
     f_temp.close()
 #
-    # Now fill arrays, comuputing locations
-#
-    count = 0
-    for zz in range(0, nbins):
-        for yy in range(0, nbins):
-            for xx in range(0, nbins):
-                x = binlims[0] + ( xx * bin_int ) + ( 0.5 * bin_int )
-                y = binlims[0] + ( yy * bin_int ) + ( 0.5 * bin_int )
-                z = binlims[0] + ( zz * bin_int ) + ( 0.5 * bin_int )
-                r[count] = np.sqrt(x**2. + y**2. + z**2.) / r_dust
-                count = count + 1
-    r = np.array(r) ; temp = np.array(temp)
-#
     # Short procedure to find number of unique radii from r array, using indices
     # of these to produce azimuthally averaged density and temperature profiles
 #
-    r_plt, indices = np.unique(r, return_inverse=True)
+    r_plt, indices = np.unique(rgrid, return_inverse=True)
     temp_plt = [0.]*len(r_plt) ; count = [0.]*len(r_plt)
 
     for i in range(0, len(indices)):
