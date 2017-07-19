@@ -18,6 +18,7 @@ Contact: bmacfarlane@uclan.ac.uk
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 #
 #
+import os
 import numpy as np
 import math
 import radmc3dPy

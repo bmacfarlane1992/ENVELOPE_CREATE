@@ -37,6 +37,7 @@ import matplotlib.pyplot as plt
 #
 sb_const_cgs = 5.6705e-5
 pc_cgs = 3.086e18
+
 #
 #
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -44,8 +45,7 @@ pc_cgs = 3.086e18
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 #
 #
-def plot(arch_dir, r_star, Rsol_to_cm, sb_const_cgs, t_star, p, tau, plt_dir, \
-   ds_dir):
+def plot(arch_dir, r_star, Rsol_to_cm, t_star, p, tau, plt_dir, ds_dir):
 #
     wav = [] ; flux = [] ; flam = []
     f = open(arch_dir+'spectrum.out')

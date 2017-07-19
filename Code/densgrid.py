@@ -8,7 +8,7 @@ Code ouputs grid results to density.inp for required RADMC-3D IO. Also returns
 rhogrid to main.py for anaylysis of profiles.
 
 Author: Benjamin MacFarlane
-Date: 12/05/2017
+Date: 19/07/2017
 Contact: bmacfarlane@uclan.ac.uk
 
 '''
@@ -411,3 +411,22 @@ def byhand(arch_dir, grid, bin_it, limits, nbins, rho_0, r_dust, p):
     f.close()
 #
     return rhogrid
+
+### ------------------------------------------------------------------------ ###
+
+def oct(arch_dir, o, n, ncells):
+
+    print "\nWriting to dust_density.inp\n"
+    ngrid = ncells
+    f = open(arch_dir+'dust_density.inp','w')
+    f.write('1 \n')
+    f.write(str(ngrid)+'\n')
+    f.write('1 \n')
+    for i in range(0, n):
+        if o.refined[i] == False:
+            f.write(str(o['density'][0].array[i])+'\n')
+        else:
+            continue
+    f.close()
+
+    return
